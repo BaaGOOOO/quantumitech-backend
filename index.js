@@ -76,6 +76,20 @@ app.post("/api/checkout", async (req, res) => {
   }
 });
 
+// LIST ORDERS: visszaadja az utolsó 50 rendelést
+app.get("/api/orders", async (req, res) => {
+    try {
+      const result = await pool.query(
+        "select * from orders order by created_at desc limit 50"
+      );
+      res.json({ ok: true, orders: result.rows });
+    } catch (e) {
+      console.error("❌ /api/orders error:", e);
+      res.status(500).json({ error: "szerver hiba" });
+    }
+  });
+  
+
 const PORT = process.env.PORT || 10000;
 app.listen(PORT, async () => {
   await bootstrap().catch((e) => console.error("Bootstrap error:", e));
